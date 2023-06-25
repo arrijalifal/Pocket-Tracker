@@ -1,6 +1,6 @@
 import style from '@/styles/Home.module.css';
 import Image from 'next/image';
-import { getServerSession } from 'next-auth';
+import { getSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 
 export default function Home() {
@@ -25,14 +25,19 @@ export default function Home() {
     )
 }
 
-// export async function getServerSideProps({req}) {
-//     const session = await getServerSession({req});
-//     if (session) {
-//         return {
-//             redirect: {
-//                 destination: '/dashboard',
-//                 permanent: false
-//             }
-//         }
-//     }
-// }
+export async function getServerSideProps({req}) {
+    const session = await getSession({req});
+    if (session) {
+        return {
+            redirect: {
+                destination: '/dashboard',
+                permanent: false
+            }
+        }
+    }
+    else {
+        return {
+            props: {}
+        }
+    }
+}

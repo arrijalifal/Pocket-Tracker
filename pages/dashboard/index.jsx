@@ -1,17 +1,25 @@
 import style from '@/styles/Home.module.css';
 import React from 'react';
 import { useState } from 'react';
+import { getSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react"
 
 export default function Home() {
+  const {data: session, status} = useSession();
   const [nominal, setNominal] = useState(undefined);
   const [isTarik, setIsTarik] = useState(false);
   const [tarik, setTarik] = useState(undefined);
+
+  async function handleLogout() {
+    await signOut();
+  }
+
   return (
     <main className="h-screen">
       <section className="h-1/2 bg-[#11009E] rounded-b-2xl relative">
         <div className='w-full px-1 flex justify-between absolute top-1'>
             <h3 className='text-transparent hover:text-inherit cursor-pointer select-none'>Menu</h3>
-            <h3 className='text-transparent hover:text-inherit cursor-pointer select-none'>Logout</h3>
+            <h3 className='text-transparent hover:text-inherit cursor-pointer select-none' onClick={handleLogout}>Logout</h3>
         </div>
         <div className="w-full h-[90%] flex flex-col justify-center items-center">
           <h3>Saldo Dompet</h3>
@@ -55,4 +63,24 @@ export default function Home() {
       </section>
     </main>
   )
+}
+
+export async function getServerSideProps({req}) {
+  const session = await getSession({req});
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+  else {
+    console.log(session);
+    return {
+      props: {
+        session
+      }
+    }
+  }
 }
