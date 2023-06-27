@@ -1,10 +1,12 @@
 import db from "@/utils/deta";
 
 export default async function handler(req, res) {
-    if (req.method === "PUT") {
-        const {amount, date, key} = req.body;
-        const dataUpdate = {
-            accountbalance: db.util.increment(-amount),
+    if (req.method === "POST") {
+        const { amount, date, key } = req.body;
+        console.log(amount, date, key);
+        console.log("menghasilkan result")
+        const result = await db.update({
+            accountbalance: db.util.increment(amount),
             accounthistory: db.util.append({
                 date,
                 type: 'expense',
@@ -18,7 +20,7 @@ export default async function handler(req, res) {
                 name: '',
                 amount
             })
-        }
-        await db.update(dataUpdate, key);
+        }, key);
+        res.status(200).json({ status: true, result });
     }
 }
