@@ -16,7 +16,7 @@ export default function Home() {
                 <h1 className={`${style.mediumtext2} w-full text-center pt-4 px-6 text-black`}>Pocket Tracker</h1>
                 <div className='w-full text-center mt-2 pb-6 px-6'>
                     <button className='bg-[#4942E4] p-4 rounded-xl' onClick={handleLogin}>
-                        <Image src={'/assets/google.svg'} width={30} height={30} className='inline' />
+                        <Image src={'/assets/google.svg'} width={30} height={30} alt='Google Logo' className='inline w-[30px] h-[30px]' />
                         <span className='inline ml-3'>Login</span>
                     </button>
                 </div>

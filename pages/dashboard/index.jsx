@@ -7,18 +7,29 @@ import axios from 'axios';
 import Loading from '@/components/Loading';
 
 export default function Home({ userData }) {
-  const { pocketbalance, accountbalance, pockethistory } = userData;
-  const { data: session, status } = useSession();
+  const { data: session} = useSession();
   const [nominal, setNominal] = useState(0);
   const [isTarik, setIsTarik] = useState(false);
   const [tarik, setTarik] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pocketBalance, setPocketOutput] = useState(pocketbalance);
-  const [accountBalance, setAccountOutput] = useState(accountbalance);
-  const [pocketHistory, setPocketHistory] = useState(pockethistory);
+  const [pocketBalance, setPocketBalance] = useState(0);
+  const [accountBalance, setAccountBalance] = useState(0);
+  const [pocketHistory, setPocketHistory] = useState(0);
+
+  async function getUserData() {
+    const data = await axios.post(
+      `${process.env.APP_URL}/api/pocket/getUser`,
+      {
+        email: session.user.email
+      }
+    );
+    setPocketBalance(data.data.pocketbalance);
+    setPocketHistory(data.data.pockethistory);
+    setAccountBalance(data.data.accountbalance)
+  }
 
   useEffect(() => {
-
+    getUserData();
   }, [pocketBalance, accountBalance, pocketHistory])
 
   async function handleLogout() {
@@ -30,7 +41,6 @@ export default function Home({ userData }) {
   async function handleWDCash() {
     setLoading(true);
     const date = new Date();
-    console.log(`variable tarik punya tipe data : ${typeof tarik}`);
     await axios({
       method: "POST",
       url: `${process.env.APP_URL}/api/pocket/withdrawCash`,
@@ -53,14 +63,14 @@ export default function Home({ userData }) {
         </div>
         <div className="w-full h-[90%] flex flex-col justify-center items-center">
           <h3>Saldo Dompet</h3>
-          <h1 className={style.semiboldtext}>Rp {pocketBalance.toLocaleString()}</h1>
+          <h1 className={style.semiboldtext}>Rp {pocketBalance.toLocaleString('id-ID')}</h1>
           <div className='w-5/6 sm:w-2/6 text-center relative m-1'>
             <button className={`border-2 px-3 py-1 rounded-2xl active:bg-[#5A96E3] ${(isTarik) ? 'invisible' : 'visible'}`} value={isTarik} onClick={() => setIsTarik(!isTarik)}>Tarik tunai</button>
             <div className={`w-full border-2 rounded-2xl ${(isTarik) ? 'visible' : 'invisible'} absolute top-0 flex justify-center`}>
               <input type='number' min='0' className='bg-transparent w-3/4 py-2 px-3 rounded-l-xl text-slate-50 focus:outline-none focus:bg-slate-50 focus:text-black' value={tarik} onChange={e => { setTarik(e.target.value) }} placeholder='Keep empty to cancel' />
               <button className='w-1/4 rounded-2xl align-[0.125rem] text-center flex justify-center py-1' value={isTarik} onClick={handleWDCash}>
                 {
-                  (loading)? <Loading /> : <span className='my-auto'>&gt;&gt;</span>
+                  (loading)? <Loading /> : <span className='my-auto'>{(tarik.length > 0)? '>>' : 'x'}</span>
                 }
               </button>
             </div>
@@ -75,12 +85,12 @@ export default function Home({ userData }) {
         <h2 className={`${style.mediumtext} w-full text-center pt-3`}>History</h2>
         <div className='pt-4 h-[48%]'>
           {
-            (pockethistory.length > 0) ?
-              pockethistory.map(h => {
+            (pocketHistory.length > 0) ?
+              pocketHistory.map(h => {
                 return (
                   <React.Fragment key={h.date}>
                     <div className='px-6 flex justify-between'>
-                      <p className={style.regulartext}>{(h.name) ? h.name : 'Tanpa Nama'}</p>
+                      <p className={`${style.regulartext}`}>{(h.name) ? h.name : 'Tanpa Nama'}</p>
                       <p>{h.amount}</p>
                     </div>
                   </React.Fragment>
