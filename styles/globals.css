@@ -6,7 +6,8 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  @apply text-slate-50 bg-[#8696FE]
+  @apply text-slate-50 bg-[#8696FE];
+  /* @apply text-slate-50 bg-green-700; */
 }
 
 button {

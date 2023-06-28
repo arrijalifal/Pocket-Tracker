@@ -7,7 +7,7 @@ import axios from 'axios';
 import Loading from '@/components/Loading';
 
 export default function Home({ userData }) {
-  const { data: session} = useSession();
+  const { data: session } = useSession();
   const [nominal, setNominal] = useState(0);
   const [isTarik, setIsTarik] = useState(false);
   const [tarik, setTarik] = useState(0);
@@ -24,7 +24,7 @@ export default function Home({ userData }) {
       }
     );
     setPocketBalance(data.data.pocketbalance);
-    setPocketHistory(data.data.pockethistory);
+    setPocketHistory(data.data.pockethistory.reverse());
     setAccountBalance(data.data.accountbalance)
   }
 
@@ -70,7 +70,7 @@ export default function Home({ userData }) {
               <input type='number' min='0' className='bg-transparent w-3/4 py-2 px-3 rounded-l-xl text-slate-50 focus:outline-none focus:bg-slate-50 focus:text-black' value={tarik} onChange={e => { setTarik(e.target.value) }} placeholder='Keep empty to cancel' />
               <button className='w-1/4 rounded-2xl align-[0.125rem] text-center flex justify-center py-1' value={isTarik} onClick={handleWDCash}>
                 {
-                  (loading)? <Loading /> : <span className='my-auto'>{(tarik.length > 0)? '>>' : 'x'}</span>
+                  (loading) ? <Loading /> : <span className='my-auto'>{(tarik.length > 0) ? '>>' : 'x'}</span>
                 }
               </button>
             </div>
@@ -82,29 +82,38 @@ export default function Home({ userData }) {
         </div>
       </section>
       <section className="h-1/2 relative">
-        <h2 className={`${style.mediumtext} w-full text-center pt-3`}>History</h2>
-        <div className='pt-4 h-[48%]'>
-          {
-            (pocketHistory.length > 0) ?
-              pocketHistory.map(h => {
-                return (
-                  <React.Fragment key={h.date}>
-                    <div className='px-6 flex justify-between'>
-                      <p className={`${style.regulartext}`}>{(h.name) ? h.name : 'Tanpa Nama'}</p>
-                      <p>{h.amount}</p>
-                    </div>
-                  </React.Fragment>
-                )
-              }) : <div className='px-6'>
-                <p>No Data</p>
-              </div>
-          }
+        <div className='h-4/6'>
+          <div className='h-[15%] flex items-center'>
+            <h1 className={`${style.mediumtext} w-full text-center`}>History</h1>
+          </div>
+          <div className='h-[70%] overflow-y-auto'>
+            <div>
+              {
+                (pocketHistory.length > 0) ?
+                  pocketHistory.map(h => {
+                    return (
+                      <React.Fragment key={h.date}>
+                        <div className='px-6 flex justify-between'>
+                          <p className={`${style.regulartext}`}>{(h.name) ? h.name : 'Tanpa Nama'}</p>
+                          <p>{(h.type === 'income') ? '+' : '-'} Rp {h.amount.toLocaleString('id-ID')}</p>
+                        </div>
+                      </React.Fragment>
+                    )
+                  }) : <div className='px-6'>
+                    <p>No Data</p>
+                  </div>
+              }
+            </div>
+          </div>
+          <div className='text-center h-[15%] relative'>
+            <button className='border rounded px-2 h-full'>View Pocket History {'>>'}</button>
+          </div>
         </div>
-        <div className='absolute bottom-6 w-full px-6 h-[30%]'>
-          <input className='block rounded-2xl p-2 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} />
-          <div className='pt-4 flex justify-between'>
-            <button className='w-[45%] px-8 py-2 rounded-xl bg-[#22F500] active:bg-green-700'>Income</button>
-            <button className='w-[45%] px-8 py-2 rounded-xl bg-[#FF3636] active:bg-red-700'>Expense</button>
+        <div className='w-full px-6 h-2/6 pt-2'>
+          <input className='block rounded-xl px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} />
+          <div className='pt-1 flex justify-between'>
+            <button className='w-[45%] px-8 py-1 rounded-xl bg-[#22F500] active:bg-green-700'>Income</button>
+            <button className='w-[45%] px-8 py-1 rounded-xl bg-[#FF3636] active:bg-red-700'>Expense</button>
           </div>
         </div>
       </section>
