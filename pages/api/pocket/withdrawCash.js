@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         console.log(amount, date, key);
         console.log("menghasilkan result")
         const result = await db.update({
-            accountbalance: db.util.increment(amount),
+            accountbalance: db.util.increment(-amount),
             accounthistory: db.util.append({
                 date,
                 type: 'expense',

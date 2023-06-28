@@ -11,16 +11,8 @@ export default async function handler(req, res) {
             const data = {
                 pocketbalance: 0,
                 accountbalance: 0,
-                pockethistory: {
-                    incomes: [],
-                    expenses: [],
-                    history: []
-                },
-                accounthistory: {
-                    incomes: [],
-                    expenses: [],
-                    history: []
-                }
+                pockethistory: [],
+                accounthistory: []
             }
             const add = await db.put(data, email);
             res.status(200).json(add);

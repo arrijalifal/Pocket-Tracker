@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getSession, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react"
 import axios from 'axios';
-import withdrawCash from '@/utils/axiosrequest';
+import Loading from '@/components/Loading';
 
 export default function Home({ userData }) {
   const { pocketbalance, accountbalance, pockethistory } = userData;
@@ -12,11 +12,14 @@ export default function Home({ userData }) {
   const [nominal, setNominal] = useState(0);
   const [isTarik, setIsTarik] = useState(false);
   const [tarik, setTarik] = useState(0);
-  const [pocketOutput, setPocketOutput] = useState(pocketbalance);
-  const [accountOutput, setAccountOutput] = useState(accountbalance);
+  const [loading, setLoading] = useState(false);
+  const [pocketBalance, setPocketOutput] = useState(pocketbalance);
+  const [accountBalance, setAccountOutput] = useState(accountbalance);
+  const [pocketHistory, setPocketHistory] = useState(pockethistory);
 
   useEffect(() => {
-  })
+
+  }, [pocketBalance, accountBalance, pocketHistory])
 
   async function handleLogout() {
     await signOut();
@@ -25,6 +28,7 @@ export default function Home({ userData }) {
   }
 
   async function handleWDCash() {
+    setLoading(true);
     const date = new Date();
     console.log(`variable tarik punya tipe data : ${typeof tarik}`);
     await axios({
@@ -37,6 +41,7 @@ export default function Home({ userData }) {
       }
     });
     setIsTarik(!isTarik);
+    setLoading(false);
   }
 
   return (
@@ -48,18 +53,22 @@ export default function Home({ userData }) {
         </div>
         <div className="w-full h-[90%] flex flex-col justify-center items-center">
           <h3>Saldo Dompet</h3>
-          <h1 className={style.semiboldtext}>Rp {pocketbalance}</h1>
+          <h1 className={style.semiboldtext}>Rp {pocketBalance.toLocaleString()}</h1>
           <div className='w-5/6 sm:w-2/6 text-center relative m-1'>
             <button className={`border-2 px-3 py-1 rounded-2xl active:bg-[#5A96E3] ${(isTarik) ? 'invisible' : 'visible'}`} value={isTarik} onClick={() => setIsTarik(!isTarik)}>Tarik tunai</button>
-            <div className={`w-full border-2 rounded-2xl ${(isTarik) ? 'visible' : 'invisible'} absolute top-0`}>
-              <input type='number' min='0' className='bg-transparent w-3/4 p-2 rounded-l-xl text-black focus:outline-none focus:bg-slate-50' value={tarik} onChange={e => { setTarik(e.target.value) }} placeholder='Keep empty to cancel' />
-              <button className='w-1/4 rounded-2xl align-[0.125rem]' value={isTarik} onClick={handleWDCash}>→</button>
+            <div className={`w-full border-2 rounded-2xl ${(isTarik) ? 'visible' : 'invisible'} absolute top-0 flex justify-center`}>
+              <input type='number' min='0' className='bg-transparent w-3/4 py-2 px-3 rounded-l-xl text-slate-50 focus:outline-none focus:bg-slate-50 focus:text-black' value={tarik} onChange={e => { setTarik(e.target.value) }} placeholder='Keep empty to cancel' />
+              <button className='w-1/4 rounded-2xl align-[0.125rem] text-center flex justify-center py-1' value={isTarik} onClick={handleWDCash}>
+                {
+                  (loading)? <Loading /> : <span className='my-auto'>&gt;&gt;</span>
+                }
+              </button>
             </div>
           </div>
         </div>
         <div className="bg-[#4942E4] w-full flex justify-between p-3 rounded-2xl absolute bottom-0">
           <p>Tabungan</p>
-          <p>Rp {accountbalance.toLocaleString('id-ID')} &gt;&gt;</p>
+          <p>Rp {accountBalance.toLocaleString('id-ID')} &gt;&gt;</p>
         </div>
       </section>
       <section className="h-1/2 relative">
@@ -71,7 +80,7 @@ export default function Home({ userData }) {
                 return (
                   <React.Fragment key={h.date}>
                     <div className='px-6 flex justify-between'>
-                      <p className={style.regulartext}>{(h.name)? h.name : 'Tanpa Nama'}</p>
+                      <p className={style.regulartext}>{(h.name) ? h.name : 'Tanpa Nama'}</p>
                       <p>{h.amount}</p>
                     </div>
                   </React.Fragment>
