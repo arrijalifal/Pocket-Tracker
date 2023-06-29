@@ -18,7 +18,7 @@ export default async function handler(req, res) {
                 pockethistory: db.util.append({
                     date,
                     type: 'income',
-                    name: '',
+                    name: 'Penarikan',
                     amount
                 })
             }, key);
