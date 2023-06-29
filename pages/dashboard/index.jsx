@@ -5,32 +5,19 @@ import { getSession, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react"
 import axios from 'axios';
 import Loading from '@/components/Loading';
+import Link from 'next/link';
+import { AxiosError } from 'axios';
 
 export default function Home({ userData }) {
+  const { pocketbalance, accountbalance, pockethistory } = userData;
   const { data: session } = useSession();
   const [nominal, setNominal] = useState(0);
   const [isTarik, setIsTarik] = useState(false);
   const [tarik, setTarik] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pocketBalance, setPocketBalance] = useState(0);
-  const [accountBalance, setAccountBalance] = useState(0);
-  const [pocketHistory, setPocketHistory] = useState(0);
-
-  async function getUserData() {
-    const data = await axios.post(
-      `${process.env.APP_URL}/api/pocket/getUser`,
-      {
-        email: session.user.email
-      }
-    );
-    setPocketBalance(data.data.pocketbalance);
-    setPocketHistory(data.data.pockethistory.reverse());
-    setAccountBalance(data.data.accountbalance)
-  }
-
-  useEffect(() => {
-    getUserData();
-  }, [pocketBalance, accountBalance, pocketHistory])
+  const [pocketBalance, setPocketBalance] = useState(pocketbalance);
+  const [accountBalance, setAccountBalance] = useState(accountbalance);
+  const [pocketHistory, setPocketHistory] = useState(pockethistory);
 
   async function handleLogout() {
     await signOut();
@@ -41,17 +28,80 @@ export default function Home({ userData }) {
   async function handleWDCash() {
     setLoading(true);
     const date = new Date();
-    await axios({
-      method: "POST",
-      url: `${process.env.APP_URL}/api/pocket/withdrawCash`,
-      data: {
-        date: date.toISOString(),
-        amount: parseInt(tarik),
-        key: session.user.email
-      }
-    });
+    const amount = parseInt(tarik);
+    const data = {
+      date: date.toISOString(),
+      amount
+    }
+    let result;
+    try {
+      result = await axios({
+        method: "POST",
+        url: `${process.env.APP_URL}/api/pocket/withdrawCash`,
+        data: {
+          ...data,
+          key: session.user.email
+        }
+      });
+    }
+    catch (err) {
+      result = null;
+    }
+    
+    if (amount > 0 && amount != NaN) {
+      setPocketHistory((result)?[...pocketHistory, {
+        ...data,
+        type: 'income',
+        name: ''
+      }].reverse() : [{
+        ...data,
+        type: 'income',
+        name: 'BAD_RESPONSE'
+      }]);
+      setPocketBalance((result)? pocketBalance + amount : 'BAD_RESPONSE');
+      setAccountBalance((result)? accountBalance - amount : 'BAD_RESPONSE');
+    }
     setIsTarik(!isTarik);
     setLoading(false);
+  }
+
+  async function handlePocketBalance(e) {
+    const type = e.target.value;
+    const date = new Date();
+    const amount = parseInt(nominal)
+    const data = {
+      date: date.toISOString(),
+      amount,
+      type,
+    }
+    let result;
+    try {
+      result = await axios({
+        method: 'POST',
+        url: `${process.env.APP_URL}/api/pocket/handlePocket`,
+        data: {
+          ...data,
+          key: session.user.email
+        }
+      });
+    }
+    catch (err) {
+      console.log(err);
+      result = null;
+    }
+    if (amount > 0 && amount != NaN) {
+      setPocketHistory((result)?[...pocketHistory, {
+        ...data,
+        type,
+        name: ''
+      }].reverse() : [{
+        ...data,
+        type: 'income',
+        name: 'BAD_RESPONSE'
+      }]);
+      setPocketBalance((result)? (type === 'income')? pocketBalance + amount : pocketBalance - amount : 'BAD_RESPONSE');
+    }
+    setNominal(0);
   }
 
   return (
@@ -76,10 +126,12 @@ export default function Home({ userData }) {
             </div>
           </div>
         </div>
-        <div className="bg-[#4942E4] w-full flex justify-between p-3 rounded-2xl absolute bottom-0">
-          <p>Tabungan</p>
-          <p>Rp {accountBalance.toLocaleString('id-ID')} &gt;&gt;</p>
-        </div>
+        <Link href={'/dashboard/tabungan'}>
+          <div className="bg-[#4942E4] w-full flex justify-between p-3 rounded-2xl absolute bottom-0 active:bg-blue-700">
+            <p>Tabungan</p>
+            <p>Rp {accountBalance.toLocaleString('id-ID')} &gt;&gt;</p>
+          </div>
+        </Link>
       </section>
       <section className="h-1/2 relative">
         <div className='h-4/6'>
@@ -110,10 +162,10 @@ export default function Home({ userData }) {
           </div>
         </div>
         <div className='w-full px-6 pt-2'>
-          <input className='block rounded-lg px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} />
+          <input className='block rounded-lg px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} onClick={(e) => e.currentTarget.select()}/>
           <div className='pt-2 flex justify-between'>
-            <button className='w-[45%] px-8 py-1 rounded-lg bg-[#22F500] active:bg-green-700'>Income</button>
-            <button className='w-[45%] px-8 py-1 rounded-lg bg-[#FF3636] active:bg-red-700'>Expense</button>
+            <button className='w-[45%] px-8 py-1 rounded-lg bg-[#22F500] active:bg-green-700' value={'income'} onClick={handlePocketBalance}>Income</button>
+            <button className='w-[45%] px-8 py-1 rounded-lg bg-[#FF3636] active:bg-red-700' value={'expense'} onClick={handlePocketBalance}>Expense</button>
           </div>
         </div>
       </section>
@@ -133,15 +185,32 @@ export async function getServerSideProps({ req }) {
   }
   else {
     const email = session.user.email;
-    const fetchData = await axios(
-      {
-        method: 'POST',
-        url: `${process.env.APP_URL}/api/pocket/getUser`,
+    let fetchData;
+    try {
+      fetchData = await axios(
+        {
+          method: 'POST',
+          url: `${process.env.APP_URL}/api/pocket/getUser`,
+          data: {
+            email: email
+          }
+        }
+      );
+    }
+    catch (err) {
+      fetchData = {
         data: {
-          email: email
+          pocketbalance: err.code,
+          accountbalance: err.code,
+          pockethistory: [{
+            date: err.code,
+            type: err.code,
+            name: err.code,
+            amount:err.code
+          }]
         }
       }
-    );
+    }
     const userData = fetchData.data;
     return {
       props: {

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
                 accounthistory: db.util.append({
                     date,
                     type: 'expense',
-                    name: '',
+                    name: 'Penarikan',
                     amount
                 }),
                 pocketbalance: db.util.increment(amount),
