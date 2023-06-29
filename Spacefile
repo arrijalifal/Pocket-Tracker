@@ -1,0 +1,20 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: minibank
+    src: ./
+    engine: next
+    primary: true
+    presets:
+      env:
+        - name: GOOGLE_ID
+          default: 642408491631-hpv4ald2epg1og9886m3246bcqrovmg8.apps.googleusercontent.com
+        - name: GOOGLE_SECRET
+          default: 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
+        - name: DETA_KEY
+          default: c0susq126yp_ACFSKSvLoQurjaWpBNGiw2UiqW4bMv1B
+        - name: NEXTAUTH_SECRET
+          default: 7vF51vEFqqE9ljFW2GTDsaQYw7FGVsTIfbrFXf6bMiY=
+        - name: APP_URL
+          default: https://pockettracker-1-d5766331.deta.app/
+
