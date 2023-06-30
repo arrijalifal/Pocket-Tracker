@@ -3,8 +3,6 @@ import db from "@/utils/deta";
 export default async function handler(req, res) {
     if (req.method === "POST") {
         const { amount, date, key } = req.body;
-        console.log(amount, date, key);
-        console.log("menghasilkan result")
         if (amount) {
             const result = await db.update({
                 accountbalance: db.util.increment(-amount),

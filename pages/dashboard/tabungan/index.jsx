@@ -15,14 +15,14 @@ export default function AccountHistory({ account }) {
                     <div>
                         {
                             (accounthistory.length > 0)?
-                            accounthistory.map(ac => {
+                            accounthistory.reverse().map(ac => {
                                 const date = new Date(ac.date);
                                 const datestring = date.toString().split(" ");
                                 const timestring = datestring[4].split(':').slice(0, 2).join(':');
                                 const datetext = datestring[2] + ' ' + datestring[1];
                                 return (
                                     <React.Fragment key={ac.date}>
-                                        <div className="flex items-center">
+                                        <div className="flex items-center border-b last-of-type:border-none">
                                             <p className="flex-none mr-4"><span className="block">{datetext}</span><span className="text-center">{timestring}</span></p>
                                             <div className="flex justify-between items-center flex-1 text-lg">
                                                 <p className="inline">{(ac.name) ? ac.name : 'Tanpa nama'}</p>
@@ -58,6 +58,7 @@ export async function getServerSideProps({ req }) {
             }
         })
         const account = result.data;
+        account.accounthistory.reverse();
         return {
             props: {
                 session,

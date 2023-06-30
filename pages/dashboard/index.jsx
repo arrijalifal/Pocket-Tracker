@@ -49,11 +49,11 @@ export default function Home({ userData }) {
     }
     
     if (amount > 0 && amount != NaN) {
-      setPocketHistory((result)?[...pocketHistory, {
+      setPocketHistory((result)?[{
         ...data,
         type: 'income',
-        name: ''
-      }].reverse() : [{
+        name: 'Penarikan'
+      }, ...pocketHistory] : [{
         ...data,
         type: 'income',
         name: 'BAD_RESPONSE'
@@ -86,7 +86,6 @@ export default function Home({ userData }) {
       });
     }
     catch (err) {
-      console.log(err);
       result = null;
     }
     if (amount > 0 && amount != NaN) {
@@ -212,6 +211,7 @@ export async function getServerSideProps({ req }) {
       }
     }
     const userData = fetchData.data;
+    userData.pockethistory.reverse();
     return {
       props: {
         session,
