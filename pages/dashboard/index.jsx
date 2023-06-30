@@ -11,9 +11,9 @@ import { AxiosError } from 'axios';
 export default function Home({ userData }) {
   const { pocketbalance, accountbalance, pockethistory } = userData;
   const { data: session } = useSession();
-  const [nominal, setNominal] = useState(0);
+  const [nominal, setNominal] = useState('');
   const [isTarik, setIsTarik] = useState(false);
-  const [tarik, setTarik] = useState(0);
+  const [tarik, setTarik] = useState('');
   const [loading, setLoading] = useState(false);
   const [pocketBalance, setPocketBalance] = useState(pocketbalance);
   const [accountBalance, setAccountBalance] = useState(accountbalance);
