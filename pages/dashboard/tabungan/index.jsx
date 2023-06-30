@@ -15,7 +15,7 @@ export default function AccountHistory({ account }) {
                     <div>
                         {
                             (accounthistory.length > 0)?
-                            accounthistory.reverse().map(ac => {
+                            accounthistory.map(ac => {
                                 const date = new Date(ac.date);
                                 const datestring = date.toString().split(" ");
                                 const timestring = datestring[4].split(':').slice(0, 2).join(':');
