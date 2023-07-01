@@ -46,9 +46,9 @@ export default function Home({ userData }) {
     catch (err) {
       result = null;
     }
-    
+
     if (amount > 0 && amount != NaN) {
-      setPocketHistory((result)?[{
+      setPocketHistory((result) ? [{
         ...data,
         type: 'income',
         name: 'Penarikan'
@@ -57,8 +57,8 @@ export default function Home({ userData }) {
         type: 'income',
         name: 'BAD_RESPONSE'
       }]);
-      setPocketBalance((result)? pocketBalance + amount : 'BAD_RESPONSE');
-      setAccountBalance((result)? accountBalance - amount : 'BAD_RESPONSE');
+      setPocketBalance((result) ? pocketBalance + amount : 'BAD_RESPONSE');
+      setAccountBalance((result) ? accountBalance - amount : 'BAD_RESPONSE');
     }
     setIsTarik(!isTarik);
     setLoading(false);
@@ -88,7 +88,7 @@ export default function Home({ userData }) {
       result = null;
     }
     if (amount > 0 && amount != NaN) {
-      setPocketHistory((result)?[...pocketHistory, {
+      setPocketHistory((result) ? [...pocketHistory, {
         ...data,
         type,
         name: ''
@@ -97,7 +97,7 @@ export default function Home({ userData }) {
         type: 'income',
         name: 'BAD_RESPONSE'
       }]);
-      setPocketBalance((result)? (type === 'income')? pocketBalance + amount : pocketBalance - amount : 'BAD_RESPONSE');
+      setPocketBalance((result) ? (type === 'income') ? pocketBalance + amount : pocketBalance - amount : 'BAD_RESPONSE');
     }
     setNominal(0);
   }
@@ -140,7 +140,7 @@ export default function Home({ userData }) {
             <div>
               {
                 (pocketHistory.length > 0) ?
-                  pocketHistory.map(h => {
+                  pocketHistory.slice(0, 8).map(h => {
                     return (
                       <React.Fragment key={h.date}>
                         <div className='px-6 flex justify-between'>
@@ -156,11 +156,13 @@ export default function Home({ userData }) {
             </div>
           </div>
           <div className='text-center h-[15%] relative'>
-            <button className='border rounded-lg px-2 py-1'>View Pocket History {'>>'}</button>
+            <Link href={'/dashboard/dompet'}>
+              <button className='border rounded-lg px-2 py-1'>View Pocket History {'>>'}</button>
+            </Link>
           </div>
         </div>
         <div className='w-full px-6 pt-2'>
-          <input className='block rounded-lg px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} onClick={(e) => e.currentTarget.select()}/>
+          <input className='block rounded-lg px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} onClick={(e) => e.currentTarget.select()} />
           <div className='pt-2 flex justify-between'>
             <button className='w-[45%] px-8 py-1 rounded-lg bg-[#22F500] active:bg-green-700' value={'income'} onClick={handlePocketBalance}>Income</button>
             <button className='w-[45%] px-8 py-1 rounded-lg bg-[#FF3636] active:bg-red-700' value={'expense'} onClick={handlePocketBalance}>Expense</button>
@@ -204,7 +206,7 @@ export async function getServerSideProps({ req }) {
             date: err.code,
             type: err.code,
             name: err.code,
-            amount:err.code
+            amount: err.code
           }]
         }
       }
