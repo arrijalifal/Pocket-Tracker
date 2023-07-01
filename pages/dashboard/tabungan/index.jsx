@@ -1,5 +1,4 @@
 import { getSession } from "next-auth/react";
-import { useEffect } from "react";
 import axios from "axios";
 import React from "react";
 

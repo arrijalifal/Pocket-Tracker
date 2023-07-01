@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react"
 import axios from 'axios';
 import Loading from '@/components/Loading';
 import Link from 'next/link';
-import { AxiosError } from 'axios';
 
 export default function Home({ userData }) {
   const { pocketbalance, accountbalance, pockethistory } = userData;

@@ -8,13 +8,14 @@ micros:
     presets:
       env:
         - name: GOOGLE_ID
-          default: 642408491631-hpv4ald2epg1og9886m3246bcqrovmg8.apps.googleusercontent.com
+          default: 642408491631-b6l9jd73n50crrk66e9g1rpviksa6q2a.apps.googleusercontent.com
         - name: GOOGLE_SECRET
-          default: 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
+          default: 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
         - name: DETA_KEY
           default: c0susq126yp_ACFSKSvLoQurjaWpBNGiw2UiqW4bMv1B
         - name: NEXTAUTH_SECRET
           default: 7vF51vEFqqE9ljFW2GTDsaQYw7FGVsTIfbrFXf6bMiY=
+        - name: NEXTAUTH_URL
         - name: APP_URL
-          default: https://pockettracker-1-d5766331.deta.app/
+    public: true
 
