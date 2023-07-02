@@ -26,7 +26,6 @@ export default function Home() {
 }
 
 export async function getServerSideProps({req}) {
-    console.log(req.headers.host);
     const session = await getSession({req});
     if (session) {
         return {

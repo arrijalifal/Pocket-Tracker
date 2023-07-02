@@ -88,11 +88,11 @@ export default function Home({ userData }) {
       result = null;
     }
     if (amount > 0 && amount != NaN) {
-      setPocketHistory((result) ? [...pocketHistory, {
+      setPocketHistory((result) ? [{
         ...data,
         type,
-        name: ''
-      }].reverse() : [{
+        name: (type === 'income')? 'Pemasukan' : 'Pengeluaran'
+      }, ...pocketHistory] : [{
         ...data,
         type: 'income',
         name: 'BAD_RESPONSE'

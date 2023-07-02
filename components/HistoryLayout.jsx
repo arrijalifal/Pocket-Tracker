@@ -3,8 +3,10 @@ import { useState } from "react";
 import axios from "axios";
 
 
-export default function HistoryLayout({ balance, history, contentType }) {
+export default function HistoryLayout({ balance, history, contentType, email }) {
     const [customValue, setCustomValue] = useState('');
+    const [historyList, setHistoryList] = useState(history);
+    const [currentBalance, setCurrentBalance] = useState(balance);
 
     async function handleCustomValue(e) {
         if (customValue < 0 && customValue === NaN) return;
@@ -22,22 +24,31 @@ export default function HistoryLayout({ balance, history, contentType }) {
             data: {
                 ...data,
                 contentType,
-                key: session.user.email,
+                key: email,
             }
         });
+        if (!result) return;
+        setHistoryList([
+            {
+                ...data,
+                name: (type === 'expense')?'Pengeluaran' : 'Pemasukan'
+            },
+            ...historyList
+        ]);
+        setCurrentBalance((type === 'income')? currentBalance + amount : currentBalance - amount);
     }
 
     return (
         <div id="maindiv" className="w-full h-3/4 flex flex-col">
             <section id="first-section" className='w-full p-3 rounded-t-2xl bg-[#4942E4] flex justify-between'>
                 <p className="inline">{contentType}</p>
-                <p className="inline">{balance} <span className="inline-block tracking-tight rotate-90">{'>>'}</span></p>
+                <p className="inline">Rp {currentBalance.toLocaleString('id-ID')} <span className="inline-block tracking-tight rotate-90">{'>>'}</span></p>
             </section>
             <section id="second-section" className={`w-full ${(contentType === 'Tabungan') ? 'bg-[#11009E]' : 'bg-[#8696FE]'} rounded-b-2xl flex flex-col overflow-y-auto flex-1`}>
                 <div id="accounthistory" className="overflow-y-auto p-3 flex-1">
                     {
-                        (history.length > 0) ?
-                            history.map(ac => {
+                        (historyList.length > 0) ?
+                            historyList.map(ac => {
                                 const date = new Date(ac.date);
                                 const datestring = date.toString().split(" ");
                                 const timestring = datestring[4].split(':').slice(0, 2).join(':');
