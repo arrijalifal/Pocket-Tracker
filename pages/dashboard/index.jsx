@@ -28,6 +28,7 @@ export default function Home({ userData }) {
     setLoading(true);
     const date = new Date();
     const amount = parseInt(tarik);
+    if (tarik.charAt(0) === '-' || accountBalance < amount) return setLoading(false), setIsTarik(!isTarik);
     const data = {
       date: date.toISOString(),
       amount

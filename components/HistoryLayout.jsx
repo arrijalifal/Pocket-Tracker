@@ -9,7 +9,7 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
     const [currentBalance, setCurrentBalance] = useState(balance);
 
     async function handleCustomValue(e) {
-        if (customValue < 0 && customValue === NaN) return;
+        if (customValue === '' || customValue < 0 || customValue === NaN) return;
         const type = e.target.value;
         const date = new Date();
         const amount = parseInt(customValue)
