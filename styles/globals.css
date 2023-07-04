@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   @apply text-slate-50 bg-[#8696FE];
@@ -16,6 +22,8 @@ button {
 
 input {
   @apply text-black;
+  @apply p-2 outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 outline-offset-0
+  
 }
 
 @media (prefers-color-scheme: dark) {

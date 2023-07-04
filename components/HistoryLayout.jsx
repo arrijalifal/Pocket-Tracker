@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 
 export default function HistoryLayout({ balance, history, contentType, email }) {
@@ -31,11 +32,11 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
         setHistoryList([
             {
                 ...data,
-                name: (type === 'expense')?'Pengeluaran' : 'Pemasukan'
+                name: (type === 'expense') ? 'Pengeluaran' : 'Pemasukan'
             },
             ...historyList
         ]);
-        setCurrentBalance((type === 'income')? currentBalance + amount : currentBalance - amount);
+        setCurrentBalance((type === 'income') ? currentBalance + amount : currentBalance - amount);
     }
 
     return (
@@ -53,15 +54,18 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
                                 const datestring = date.toString().split(" ");
                                 const timestring = datestring[4].split(':').slice(0, 2).join(':');
                                 const datetext = datestring[2] + ' ' + datestring[1];
+                                const routeto = contentType.toLowerCase();
                                 return (
                                     <React.Fragment key={ac.date}>
-                                        <div className="flex items-center border-b last-of-type:border-none">
-                                            <p className="flex-none mr-4"><span className="block">{datetext}</span><span className="text-center">{timestring}</span></p>
-                                            <div className="flex justify-between items-center flex-1 text-lg">
-                                                <p className="inline">{(ac.name) ? ac.name : 'Tanpa nama'}</p>
-                                                <span className="">{(ac.type === 'expense') ? '-' : '+'}Rp {ac.amount.toLocaleString('id-ID')}</span>
+                                        <Link href={`/dashboard/${routeto}/${ac.date}`}>
+                                            <div className="flex p-1 items-center border-b last-of-type:border-none active:bg-[#4942E4] active:rounded-xl">
+                                                <p className="flex-none mr-4"><span className="block">{datetext}</span><span className="text-center">{timestring}</span></p>
+                                                <div className="flex justify-between items-center flex-1 text-lg">
+                                                    <p className="inline">{(ac.name) ? ac.name : 'Tanpa nama'}</p>
+                                                    <span className="">{(ac.type === 'expense') ? '-' : '+'}Rp {ac.amount.toLocaleString('id-ID')}</span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                     </React.Fragment>
                                 )
                             })
@@ -71,7 +75,7 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
                     }
                 </div>
                 <div id="buttondiv" className="p-3 flex justify-center flex-col">
-                    <input type="text" className="block text-center focus:outline focus:outline-blue-700 p-2 rounded-xl mb-2" placeholder="Add Custom Value" value={customValue} onChange={e => setCustomValue(e.target.value)} />
+                    <input type="text" className="block text-center rounded-xl mb-2" placeholder="Add Custom Value" value={customValue} onChange={e => setCustomValue(e.target.value)} />
                     <div className="w-full flex justify-between">
                         <button className=" w-[49%] py-2 rounded-xl bg-[#22F500]" value={'income'} onClick={handleCustomValue}>Income</button>
                         <button className=" w-[49%] py-2 rounded-xl bg-[#FF3636]" value={'expense'} onClick={handleCustomValue}>Expense</button>

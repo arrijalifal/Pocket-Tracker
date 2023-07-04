@@ -163,7 +163,7 @@ export default function Home({ userData }) {
           </div>
         </div>
         <div className='w-full px-6 pt-2'>
-          <input className='block rounded-lg px-2 py-1 w-full outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 focus: outline-offset-0' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} onClick={(e) => e.currentTarget.select()} />
+          <input className='block rounded-lg px-2 py-1 w-full' type="number" placeholder='Enter Nominal' value={nominal} onChange={e => { setNominal(e.target.value) }} onClick={(e) => e.currentTarget.select()} />
           <div className='pt-2 flex justify-between'>
             <button className='w-[45%] px-8 py-1 rounded-lg bg-[#22F500] active:bg-green-700' value={'income'} onClick={handlePocketBalance}>Income</button>
             <button className='w-[45%] px-8 py-1 rounded-lg bg-[#FF3636] active:bg-red-700' value={'expense'} onClick={handlePocketBalance}>Expense</button>
