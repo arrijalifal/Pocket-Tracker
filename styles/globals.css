@@ -20,7 +20,7 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-input {
+input, select, option {
   @apply text-black;
   @apply p-2 outline-none focus:outline-[#0A6EBD] focus:outline focus:outline-2 outline-offset-0
   

@@ -21,7 +21,7 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
         }
         const result = await axios({
             method: 'POST',
-            url: `${process.env.APP_URL}/api/pocket/handleMoneyDetail`,
+            url: `${process.env.APP_URL}/api/pocket/handleMoneyHistory`,
             data: {
                 ...data,
                 contentType,
@@ -41,10 +41,12 @@ export default function HistoryLayout({ balance, history, contentType, email }) 
 
     return (
         <div id="maindiv" className="w-full h-3/4 flex flex-col">
-            <section id="first-section" className='w-full p-3 rounded-t-2xl bg-[#4942E4] flex justify-between'>
-                <p className="inline">{contentType}</p>
-                <p className="inline">Rp {currentBalance.toLocaleString('id-ID')} <span className="inline-block tracking-tight rotate-90">{'>>'}</span></p>
-            </section>
+            <Link href={'/dashboard'}>
+                <section id="first-section" className='w-full p-3 rounded-t-2xl bg-[#4942E4] flex justify-between'>
+                    <p className="inline">{contentType}</p>
+                    <p className="inline">Rp {currentBalance.toLocaleString('id-ID')} <span className="inline-block tracking-tight rotate-90">{'>>'}</span></p>
+                </section>
+            </Link>
             <section id="second-section" className={`w-full ${(contentType === 'Tabungan') ? 'bg-[#11009E]' : 'bg-[#8696FE]'} rounded-b-2xl flex flex-col overflow-y-auto flex-1`}>
                 <div id="accounthistory" className="overflow-y-auto p-3 flex-1">
                     {

@@ -17,6 +17,7 @@ export default function Home({ userData }) {
   const [pocketBalance, setPocketBalance] = useState(pocketbalance);
   const [accountBalance, setAccountBalance] = useState(accountbalance);
   const [pocketHistory, setPocketHistory] = useState(pockethistory);
+  const [showDialog, setShowDialog] = useState(false);
 
   async function handleLogout() {
     await signOut();
@@ -68,7 +69,9 @@ export default function Home({ userData }) {
   async function handlePocketBalance(e) {
     const type = e.target.value;
     const date = new Date();
-    const amount = parseInt(nominal)
+    if (nominal === '') return;
+    const amount = parseInt(nominal);
+    if (amount < 0) return setNominal('');
     const data = {
       date: date.toISOString(),
       amount,
@@ -88,23 +91,24 @@ export default function Home({ userData }) {
     catch (err) {
       result = null;
     }
-    if (amount > 0 && amount != NaN) {
-      setPocketHistory((result) ? [{
-        ...data,
-        type,
-        name: (type === 'income')? 'Pemasukan' : 'Pengeluaran'
-      }, ...pocketHistory] : [{
-        ...data,
-        type: 'income',
-        name: 'BAD_RESPONSE'
-      }]);
-      setPocketBalance((result) ? (type === 'income') ? pocketBalance + amount : pocketBalance - amount : 'BAD_RESPONSE');
-    }
-    setNominal(0);
+    setPocketHistory((result) ? [{
+      ...data,
+      type,
+      name: (type === 'income') ? 'Pemasukan' : 'Pengeluaran'
+    }, ...pocketHistory] : [{
+      ...data,
+      type: 'income',
+      name: 'BAD_RESPONSE'
+    }]);
+    setPocketBalance((result) ? (type === 'income') ? pocketBalance + amount : pocketBalance - amount : 'BAD_RESPONSE');
+    setNominal('');
   }
 
   return (
-    <main className="h-screen">
+    <main className="h-screen relative">
+      <section className='w-screen h-screen absolute bg-black/25 z-10 flex items-center invisible'>
+        <div className='bg-[#4942E4] w-1/2 h-1/5 mx-auto rounded-xl'></div>
+      </section>
       <section className="h-1/2 bg-[#11009E] rounded-b-2xl relative">
         <div className='w-full px-1 flex justify-between absolute top-1'>
           <h3 className='text-transparent hover:text-inherit cursor-pointer select-none'>Menu</h3>
