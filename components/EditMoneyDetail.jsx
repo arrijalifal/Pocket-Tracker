@@ -33,7 +33,6 @@ export default function EditMoneyDetail({ history, exactdata, edittype }) {
         const dataNow = history.reverse();
         const index = dataNow.findIndex(o => o.date === exactdata);
         dataNow.splice(index, 1, data)
-        console.log(dataNow);
         await axios.post(
             '/api/pocket/handleMoneyDetail',
             {

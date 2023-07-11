@@ -10,7 +10,7 @@ export default function EditDompet({account}) {
 }
 
 export async function getServerSideProps({ req }) {
-    const currentsession = await sessionData({ req }, false);
+    const currentsession = await sessionData({ req }, true);
     if (currentsession.redirect) return;
     return currentsession
 }
